@@ -63,7 +63,7 @@ mctrailer/
 
 ## 🎬 演示与传播
 
-- 在线演示：`https://<YOUR_USERNAME>.github.io/mctrailer/`（部署后替换）
+- 在线演示：https://wayne0612.github.io/mctrailer/
 - 海报样例：`media/psf-requests-poster.svg`
 - 20 秒演示视频 / 首屏 GIF：见 `media/`（赛事传播日补充）
 
