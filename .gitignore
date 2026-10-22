@@ -1,0 +1,25 @@
+# secrets / env
+.env
+.env.*
+*.token
+mcp-config.json
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# node
+node_modules/
+npm-debug.log*
+
+# os
+.DS_Store
+Thumbs.db
+
+# editors
+.idea/
+.vscode/
+*.swp
