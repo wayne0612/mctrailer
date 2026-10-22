@@ -1,0 +1,35 @@
+{
+  "note": "演示样例数据（demo fixtures），非麦当劳 MCP 实时结果。餐品、价格仅用于演示排版，不对应任何真实门店或实时价格。配置 MCD_MCP_TOKEN 后，本地 CLI/Skill 走实时链路。",
+  "demo_meals": [
+    { "name": "巨无霸", "price": 24.5, "components": ["双层牛肉饼", "芝士", "生菜"] },
+    { "name": "麦辣鸡腿堡套餐", "price": 32.0, "components": ["麦辣鸡腿堡", "薯条", "可乐"] },
+    { "name": "板烧鸡腿堡", "price": 21.0, "components": ["板烧鸡腿排", "生菜", "烧汁"] },
+    { "name": "“我就喜欢”鸡薯双全盒", "price": 15.9, "components": ["心形薯饼", "麦乐鸡", "风味酱"] }
+  ],
+  "presets": [
+    {
+      "repo_url": "https://github.com/psf/requests",
+      "label": "psf/requests",
+      "genre": "side_project",
+      "meal_index": 0
+    },
+    {
+      "repo_url": "https://github.com/vuejs/vue",
+      "label": "vuejs/vue",
+      "genre": "refactor_marathon",
+      "meal_index": 1
+    },
+    {
+      "repo_url": "https://github.com/facebook/react",
+      "label": "facebook/react",
+      "genre": "release_day",
+      "meal_index": 2
+    },
+    {
+      "repo_url": "https://github.com/home-assistant/core",
+      "label": "home-assistant/core",
+      "genre": "fixing_a_bug",
+      "meal_index": 3
+    }
+  ]
+}

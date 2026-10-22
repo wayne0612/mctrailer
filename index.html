@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>McTrailer · 麦门导演局 — 把你的 GitHub 项目拍成麦当劳电影海报</title>
+  <meta name="description" content="粘贴一个公开 GitHub 仓库，生成一部麦门程序员补给电影海报。基于麦当劳 MCP 的真实菜单与价格。" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div class="brand">
+        <span class="logo">🍔</span>
+        <div>
+          <h1>McTrailer <span class="cn">麦门导演局</span></h1>
+          <p class="tagline">把你的 GitHub 项目，拍成一部 15 秒的麦门程序员补给电影。</p>
+        </div>
+      </div>
+      <span class="badge-demo" id="modeBadge">演示样例 · 非实时核价</span>
+    </header>
+
+    <section class="panel">
+      <label class="field">
+        <span>公开 GitHub 仓库地址</span>
+        <input id="repoInput" type="text" placeholder="https://github.com/psf/requests" />
+      </label>
+
+      <div class="row">
+        <label class="field">
+          <span>城市（实时查门店用，演示模式忽略）</span>
+          <input id="cityInput" type="text" placeholder="深圳市" />
+        </label>
+        <label class="field">
+          <span>区域关键词</span>
+          <input id="kwInput" type="text" placeholder="南山区" />
+        </label>
+        <label class="field small">
+          <span>取餐方式</span>
+          <select id="beType">
+            <option value="1">到店自提</option>
+            <option value="5">得来速车道</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button id="genBtn" class="btn primary">🎬 生成电影海报</button>
+        <button id="dlBtn" class="btn" disabled>⬇ 下载 PNG</button>
+      </div>
+
+      <div class="presets">
+        <span class="presets-label">试试：</span>
+        <div id="presetChips" class="chips"></div>
+      </div>
+
+      <p class="hint" id="hint">
+        网页演示使用固定样例数据排版海报；配置 <code>MCD_MCP_TOKEN</code> 后，
+        本地 CLI / WorkBuddy Skill 会走麦当劳 MCP 实时门店 / 菜单 / 试算价。
+      </p>
+    </section>
+
+    <section class="stage">
+      <div class="poster-frame">
+        <canvas id="poster" width="720" height="1080"></canvas>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <p>
+        作品为麦当劳程序员节创意开发大赛参赛项目，<b>非麦当劳官方产品</b>。
+        餐品、价格及供应状态以麦当劳官方渠道实时结果为准。
+      </p>
+      <p class="links">
+        <a href="https://github.com/M-China/mcd-mcp-server" target="_blank" rel="noopener">麦当劳 MCP</a> ·
+        <a href="https://github.com/M-China/mcd-developer-innovation-challenge" target="_blank" rel="noopener">大赛仓库</a> ·
+        <span>McTrailer · 麦门导演局</span>
+      </p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
