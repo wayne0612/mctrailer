@@ -35,7 +35,7 @@ def _now() -> str:
 def render_poster_svg(script: dict, meal: dict | None = None,
                       live: bool = False, queried_at: str | None = None) -> str:
     p = _PALETTES.get(script.get("palette", "road"), _PALETTES["road"])
-    stats = script.get("stat_block", {})
+    stats = script.get("stat_block") or {}
     title = script.get("film_title", "《未命名》")
     line = script.get("opening_line", "")
     protagonist = script.get("protagonist", "独立开发者")
@@ -81,6 +81,14 @@ def render_poster_svg(script: dict, meal: dict | None = None,
         parts.append(f'<text x="56" y="{y}" font-size="26" fill="{p["accent"]}" font-style="italic">{_esc(seg)}</text>')
         y += 36
 
+    # user's own words (text mode) as a personal quote
+    user_quote = script.get("user_quote", "")
+    if user_quote:
+        y += 6
+        for seg in _wrap("— " + user_quote + " —", 20):
+            parts.append(f'<text x="56" y="{y}" font-size="18" fill="#8a8a9a" font-style="italic">{_esc(seg)}</text>')
+            y += 26
+
     # protagonist chip + prop line
     y += 26
     parts.append(f'<rect x="56" y="{y-30}" width="300" height="44" rx="22" fill="{p["chip"]}" '
@@ -91,12 +99,15 @@ def render_poster_svg(script: dict, meal: dict | None = None,
         parts.append(f'<text x="56" y="{y}" font-size="20" fill="#c9c9d2">{_esc(seg)}</text>')
         y += 30
 
-    # stat block
+    # stat block (only shown when real repo data exists)
     y += 20
-    stars_phrase = stats.get("stars_phrase", "0 stars")
-    lang = stats.get("language", "未知语言")
-    parts.append(f'<text x="56" y="{y}" font-size="20" fill="#9a9aa6">'
-                 f'主语言 {_esc(lang)} · {_esc(stars_phrase)}</text>')
+    if stats:
+        stars_phrase = stats.get("stars_phrase", "0 stars")
+        lang = stats.get("language", "未知语言")
+        parts.append(f'<text x="56" y="{y}" font-size="20" fill="#9a9aa6">'
+                     f'主语言 {_esc(lang)} · {_esc(stars_phrase)}</text>')
+    else:
+        parts.append(f'<text x="56" y="{y}" font-size="18" fill="#6f6f80">— 麦门导演局 · 今日放映 —</text>')
 
     # meal / supply card
     card_y = H - 300

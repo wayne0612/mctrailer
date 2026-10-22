@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>McTrailer · 麦门导演局 — 把你的 GitHub 项目拍成麦当劳电影海报</title>
-  <meta name="description" content="粘贴一个公开 GitHub 仓库，生成一部麦门程序员补给电影海报。基于麦当劳 MCP 的真实菜单与价格。" />
+  <title>McTrailer · 麦门导演局 — 把你的项目拍成麦当劳电影海报</title>
+  <meta name="description" content="不用 GitHub 也能玩：选个场景或写一句话，生成一部麦门程序员补给电影海报。基于麦当劳 MCP 的真实菜单与价格。" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -14,55 +14,59 @@
         <span class="logo">🍔</span>
         <div>
           <h1>McTrailer <span class="cn">麦门导演局</span></h1>
-          <p class="tagline">把你的 GitHub 项目，拍成一部 15 秒的麦门程序员补给电影。</p>
+          <p class="tagline">把你的项目，拍成一部麦门程序员补给电影。<b>不用 GitHub 也能玩。</b></p>
         </div>
       </div>
       <span class="badge-demo" id="modeBadge">演示样例 · 非实时核价</span>
     </header>
 
     <section class="panel">
-      <label class="field">
-        <span>公开 GitHub 仓库地址</span>
-        <input id="repoInput" type="text" placeholder="https://github.com/psf/requests" />
-      </label>
+      <div class="modes">
+        <button class="mode-tab active" data-mode="scene">🎭 选个场景</button>
+        <button class="mode-tab" data-mode="text">✍️ 写一句话</button>
+        <button class="mode-tab" data-mode="repo">🔗 GitHub 仓库</button>
+      </div>
 
-      <div class="row">
+      <div class="mode-pane" id="pane-scene">
+        <div class="scene-grid">
+          <button class="scene-card" data-genre="fixing_a_bug"><span class="emoji">🕵️</span><b>悬疑 · 修 Bug</b><i>“第 37 次修复终于通过”</i></button>
+          <button class="scene-card" data-genre="release_day"><span class="emoji">🚀</span><b>动作 · 发版日</b><i>“部署前最后 15 分钟”</i></button>
+          <button class="scene-card" data-genre="refactor_marathon"><span class="emoji">🛸</span><b>科幻 · 重构</b><i>“重构不是毁灭，是新生”</i></button>
+          <button class="scene-card" data-genre="side_project"><span class="emoji">🛣️</span><b>公路 · 副业</b><i>“一个人的创业实验”</i></button>
+        </div>
+      </div>
+
+      <div class="mode-pane hidden" id="pane-text">
         <label class="field">
-          <span>城市（实时查门店用，演示模式忽略）</span>
-          <input id="cityInput" type="text" placeholder="深圳市" />
+          <span>用一句话描述你的项目 / 今天在干嘛</span>
+          <input id="textInput" type="text" placeholder="例如：凌晨三点还在修一个诡异的 bug" />
         </label>
+        <div class="actions"><button id="textBtn" class="btn primary">🎬 生成海报</button></div>
+      </div>
+
+      <div class="mode-pane hidden" id="pane-repo">
         <label class="field">
-          <span>区域关键词</span>
-          <input id="kwInput" type="text" placeholder="南山区" />
+          <span>公开 GitHub 仓库地址（有仓库才需要）</span>
+          <input id="repoInput" type="text" placeholder="https://github.com/psf/requests" />
         </label>
-        <label class="field small">
-          <span>取餐方式</span>
-          <select id="beType">
-            <option value="1">到店自提</option>
-            <option value="5">得来速车道</option>
-          </select>
-        </label>
+        <div class="row">
+          <label class="field"><span>城市（实时查门店用，演示忽略）</span><input id="cityInput" type="text" placeholder="深圳市" /></label>
+          <label class="field"><span>区域关键词</span><input id="kwInput" type="text" placeholder="南山区" /></label>
+          <label class="field small"><span>取餐方式</span><select id="beType"><option value="1">到店自提</option><option value="5">得来速车道</option></select></label>
+        </div>
+        <div class="actions"><button id="genBtn" class="btn primary">🎬 生成海报</button></div>
+        <div class="presets"><span class="presets-label">试试：</span><div id="presetChips" class="chips"></div></div>
       </div>
 
-      <div class="actions">
-        <button id="genBtn" class="btn primary">🎬 生成电影海报</button>
-        <button id="dlBtn" class="btn" disabled>⬇ 下载 PNG</button>
-      </div>
-
-      <div class="presets">
-        <span class="presets-label">试试：</span>
-        <div id="presetChips" class="chips"></div>
-      </div>
-
-      <p class="hint" id="hint">
-        网页演示使用固定样例数据排版海报；配置 <code>MCD_MCP_TOKEN</code> 后，
-        本地 CLI / WorkBuddy Skill 会走麦当劳 MCP 实时门店 / 菜单 / 试算价。
-      </p>
+      <p class="hint" id="hint">💡 点上面的场景卡片就能玩；配置 <code>MCD_MCP_TOKEN</code> 后，本地 CLI / WorkBuddy Skill 会走麦当劳 MCP 实时门店 / 菜单 / 试算价。</p>
     </section>
 
     <section class="stage">
       <div class="poster-frame">
         <canvas id="poster" width="720" height="1080"></canvas>
+      </div>
+      <div class="stage-actions">
+        <button id="dlBtn" class="btn" disabled>⬇ 下载 PNG 海报</button>
       </div>
     </section>
 

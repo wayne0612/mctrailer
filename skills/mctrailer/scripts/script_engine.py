@@ -12,6 +12,7 @@ from repo_profile import (
     GENRE_RELEASE,
     GENRE_REFACTOR,
     GENRE_SIDE,
+    classify_genre,
 )
 
 # Each template: (中文片名模板, 电影台词, 视觉色调key, 道具行)
@@ -54,33 +55,65 @@ def _stars_phrase(stars: int) -> str:
 
 
 def build_script(profile: dict) -> dict:
-    """Turn a repo profile into a deterministic poster script."""
+    """Turn a repo profile (or a synthetic one) into a deterministic poster script."""
     genre = profile.get("genre") or GENRE_SIDE
     tpl = _TEMPLATES.get(genre, _TEMPLATES[GENRE_SIDE])
-    name = profile.get("name") or "unknown"
+    name = profile.get("name") or ""
     lang = profile.get("language") or "未知语言"
     stars = int(profile.get("stars") or 0)
     commits = profile.get("commits") or []
     protagonist = profile.get("protagonist") or "独立开发者"
 
-    return {
-        "genre": genre,
-        "genre_cn": tpl["genre_cn"],
-        "film_title": tpl["film"].format(name=name),
-        "opening_line": tpl["line"],
-        "protagonist": protagonist,
-        "prop_line": tpl["prop"],
-        "palette": tpl["palette"],
-        "stat_block": {
+    if name:
+        film_title = tpl["film"].format(name=name)
+    else:  # no project name (scenario / free-text entry) -> clean movie title
+        film_title = tpl["film"].replace("{name}：", "").format(name=name)
+
+    # only show a stat block when there is real repo data to show
+    if profile.get("language") or stars > 0:
+        stat_block = {
             "language": lang,
             "stars": stars,
             "stars_phrase": _stars_phrase(stars),
             "recent_commits": commits[:3],
-        },
+        }
+    else:
+        stat_block = None
+
+    return {
+        "genre": genre,
+        "genre_cn": tpl["genre_cn"],
+        "film_title": film_title,
+        "opening_line": tpl["line"],
+        "protagonist": protagonist,
+        "prop_line": tpl["prop"],
+        "palette": tpl["palette"],
+        "stat_block": stat_block,
+        "user_quote": profile.get("user_quote", ""),
         "source": profile.get("source", "unknown"),
         "repo": profile.get("full_name") or name,
         "repo_url": profile.get("url", ""),
     }
+
+
+def _synthetic_profile(genre: str, source: str) -> dict:
+    """A profile with no repo data — used by the non-GitHub entry points."""
+    return {"name": "", "description": "", "language": None, "topics": [],
+            "stars": 0, "commits": [], "genre": genre,
+            "protagonist": "独立开发者", "full_name": "", "url": "", "source": source}
+
+
+def build_script_from_text(text: str, forced_genre: str | None = None) -> dict:
+    """Non-GitHub entry: classify a free-text line into a genre, then build a script."""
+    genre = forced_genre or classify_genre(text)
+    script = build_script(_synthetic_profile(genre, "text"))
+    script["user_quote"] = (text or "")[:42]
+    return script
+
+
+def build_script_from_scenario(genre: str) -> dict:
+    """Non-GitHub entry: build directly from a chosen scenario / genre."""
+    return build_script(_synthetic_profile(genre, "scenario"))
 
 
 if __name__ == "__main__":  # tiny manual demo

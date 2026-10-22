@@ -1,0 +1,46 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Python compile + smoke test + unit tests
+        run: |
+          python -m py_compile skills/mctrailer/scripts/*.py
+          python skills/mctrailer/scripts/smoke_test.py
+          python -m unittest discover -s tests -p "test_*.py" -v
+
+      - name: Web checks (JS syntax + JSON validity)
+        run: |
+          node --check web/app.js
+          node -e "JSON.parse(require('fs').readFileSync('web/demo-fixtures.json','utf8')); console.log('fixtures JSON OK')"
+          node -e "JSON.parse(require('fs').readFileSync('mcp-config.example.json','utf8')); console.log('config example JSON OK')"
+
+      - name: Secret scan (block real tokens)
+        run: |
+          if grep -RInE "Bearer [A-Za-z0-9_-]{16,}" --exclude-dir=.git . ; then
+            echo "::error::possible real token committed — aborting"; exit 1
+          else
+            echo "no secrets found"
+          fi
+
+      - name: Official declaration byte-check
+        run: |
+          echo "cd28101bcb29cc8fb24b372fe91ce6b42c4a1487a54e01f7ade0c8c6a84241b7  CONTEST_DECLARATION.md" | sha256sum -c -

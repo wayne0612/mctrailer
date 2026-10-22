@@ -59,5 +59,26 @@ class TestScriptEngine(unittest.TestCase):
         self.assertEqual(s["genre"], rp.GENRE_SIDE)
 
 
+class TestNonGithubEntry(unittest.TestCase):
+    def test_scenario_deterministic_and_clean_title(self):
+        for g in (rp.GENRE_FIX, rp.GENRE_RELEASE, rp.GENRE_REFACTOR, rp.GENRE_SIDE):
+            s1 = se.build_script_from_scenario(g)
+            self.assertEqual(s1, se.build_script_from_scenario(g))
+            self.assertNotIn("{name}", s1["film_title"])
+            self.assertNotIn("：》", s1["film_title"])  # no leftover separator
+            self.assertTrue(s1["film_title"].startswith("《"))
+            self.assertIsNone(s1["stat_block"])  # never fake stars for non-repo
+
+    def test_text_classifies_and_has_quote(self):
+        s = se.build_script_from_text("凌晨三点还在修一个诡异的 bug")
+        self.assertEqual(s["genre"], rp.GENRE_FIX)
+        self.assertEqual(s["user_quote"], "凌晨三点还在修一个诡异的 bug")
+        self.assertIsNone(s["stat_block"])
+
+    def test_text_deterministic(self):
+        self.assertEqual(se.build_script_from_text("今天要上线发布了"),
+                         se.build_script_from_text("今天要上线发布了"))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -1,26 +1,28 @@
 ---
 name: mctrailer
 description: >-
-  把一个公开的 GitHub 仓库变成一部「麦门程序员补给电影」海报。输入仓库地址（可选城市/区域），
-  先用确定性规则判定电影类型（悬疑/动作/科幻/公路），再通过麦当劳官方 MCP 拉取附近门店、
-  实时菜单与试算价格，推荐当日补给餐品，生成可分享的 SVG/PNG 海报。
-  Triggers: 麦门导演局, McTrailer, GitHub 仓库变电影海报, 程序员电影海报, 麦门补给,
-  把我的项目拍成电影, repo to movie poster, McDonald's movie poster。
+  把你的项目拍成一部「麦门程序员补给电影」海报——不用 GitHub 也能玩：选个场景或写一句话即可，
+  也可以粘贴公开 GitHub 仓库地址。用确定性规则判定电影类型（悬疑/动作/科幻/公路），再通过麦当劳
+  官方 MCP 拉取附近门店、实时菜单与试算价格，推荐当日补给餐品，生成可分享的 SVG/PNG 海报。
+  Triggers: 麦门导演局, McTrailer, 电影海报, 程序员电影海报, 麦门补给, 把我的项目拍成电影,
+  选个场景, 写一句话, repo to movie poster, McDonald's movie poster。
 ---
 
 # McTrailer · 麦门导演局
 
-把任意**公开** GitHub 仓库变成一部 15 秒的「麦门程序员补给电影」，并用**麦当劳官方 MCP 的真实
-菜单与价格**推荐当日补给餐品，生成一张可分享的电影海报。
+把你的项目拍成一部 15 秒的「麦门程序员补给电影」，并用**麦当劳官方 MCP 的真实菜单与价格**推荐
+当日补给餐品，生成一张可分享的电影海报。**三种入口，不用 GitHub 也能玩**：
+① 选个场景卡片；② 写一句话；③（进阶）粘贴公开 GitHub 仓库地址。
 
 ## 这个 Skill 做什么
-1. 读取仓库的**公开**元数据（描述、语言、topics、最近提交信息）——只读、不克隆、不执行。
-2. 用**确定性**规则把仓库映射到一种电影类型（纯娱乐分类，不评价程序员水平）。
+1. 三入口取"项目"：场景卡片 / 一句话 / 公开 GitHub 仓库元数据（仅后者联网，且只读公开数据、不克隆不执行）。
+2. 用**确定性**规则把输入映射到一种电影类型（纯娱乐分类，不评价程序员水平）。
 3. 通过麦当劳 MCP 查询附近门店 → 实时菜单 → 餐品详情 → 官方试算价。
 4. 生成电影海报（SVG；浏览器内可导出 PNG），标注数据来源与查询时间。
 
 ## 何时使用
-- 用户给出一个 GitHub 仓库地址，想要"电影海报 / 麦门主角 / 补给推荐"。
+- 用户想要"电影海报 / 麦门主角 / 补给推荐"，但**不一定有 GitHub**——给个场景或一句话就能玩。
+- 用户给出一个 GitHub 仓库地址，想要同样的海报。
 - 用户想体验麦当劳 MCP 的点餐/菜单/价格能力。
 
 ## 运行方式（唯一入口）
@@ -28,12 +30,16 @@ description: >-
 让脚本用真实 schema 调用。
 
 ```bash
-# 演示模式（无 Token，明确标注为演示样例）
+# 不用 GitHub：选场景 / 写一句话（演示模式，明确标注演示样例）
+python3 scripts/generate.py --scene fixing_a_bug --demo
+python3 scripts/generate.py --text "凌晨三点还在修一个诡异的 bug" --demo
+
+# 有 GitHub 仓库：演示模式
 python3 scripts/generate.py --repo https://github.com/psf/requests --demo
 
-# 实时模式（需要 MCD_MCP_TOKEN；--city 提供城市以查附近门店）
+# 实时模式（需要 MCD_MCP_TOKEN；--city 提供城市以查附近门店；三种入口都支持）
 MCD_MCP_TOKEN=xxx python3 scripts/generate.py \
-    --repo https://github.com/psf/requests --city 深圳市 --keyword 南山区
+    --scene release_day --city 深圳市 --keyword 南山区
 ```
 
 环境变量：
@@ -51,7 +57,7 @@ MCD_MCP_TOKEN=xxx python3 scripts/generate.py \
 - 演示数据必须在界面/海报上明确标注"演示样例 · 非实时核价"。
 
 ## 输入参数
-- `--repo`（必填）：公开 GitHub 仓库 URL。
+- 三入口任选其一：`--repo`（公开仓库 URL）/ `--text`（一句话）/ `--scene`（fixing_a_bug|release_day|refactor_marathon|side_project）。
 - `--city` / `--keyword`（实时查门店用）：城市 / 区域关键词。
 - `--be-type`：`1` 到店自提（默认），`5` 得来速车道取餐。
 - `--demo`：强制演示模式，不调用 MCP。

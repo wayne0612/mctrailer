@@ -18,11 +18,31 @@ body{
 h1{margin:0;font-size:26px;letter-spacing:.5px}
 h1 .cn{color:var(--accent);font-weight:600}
 .tagline{margin:4px 0 0;color:var(--muted);font-size:14px}
+.tagline b{color:var(--text)}
 .badge-demo{background:#3a2a00;color:var(--accent);border:1px solid #5a4300;
   padding:6px 12px;border-radius:999px;font-size:12px;white-space:nowrap}
 
 .panel{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);
   border-radius:18px;padding:20px;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+
+.modes{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.mode-tab{background:#0e0e16;border:1px solid var(--line);color:var(--muted);
+  padding:9px 16px;border-radius:999px;font-size:14px;cursor:pointer;transition:all .12s}
+.mode-tab:hover{color:var(--text)}
+.mode-tab.active{color:#1a0f00;background:linear-gradient(135deg,var(--accent),#ff8c1a);
+  border-color:transparent;font-weight:700}
+.mode-pane.hidden{display:none}
+
+.scene-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.scene-card{background:#0e0e16;border:1px solid var(--line);border-radius:16px;padding:18px;
+  cursor:pointer;text-align:left;color:var(--text);display:flex;flex-direction:column;gap:6px;
+  transition:transform .12s, border-color .12s, box-shadow .12s}
+.scene-card:hover{transform:translateY(-2px) scale(1.02);border-color:var(--accent);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.scene-card:active{transform:scale(.99)}
+.scene-card .emoji{font-size:30px}
+.scene-card b{font-size:16px}
+.scene-card i{font-style:normal;color:var(--muted);font-size:13px}
+
 .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;flex:1}
 .field>span{font-size:12px;color:var(--muted)}
 .field input,.field select{
@@ -49,13 +69,14 @@ h1 .cn{color:var(--accent);font-weight:600}
 .hint{color:var(--muted);font-size:12px;line-height:1.6;margin:14px 0 0}
 .hint code{background:#0e0e16;padding:1px 6px;border-radius:6px;color:var(--accent)}
 
-.stage{display:flex;justify-content:center;margin-top:26px}
+.stage{display:flex;flex-direction:column;align-items:center;margin-top:26px}
 .poster-frame{border-radius:16px;overflow:hidden;border:1px solid var(--line);
   box-shadow:0 24px 60px rgba(0,0,0,.5);line-height:0;max-width:100%}
 #poster{width:min(420px,92vw);height:auto;background:#000}
+.stage-actions{display:flex;justify-content:center;margin-top:16px}
 
 .foot{margin-top:28px;color:var(--muted);font-size:12px;line-height:1.7;text-align:center}
 .foot b{color:var(--text)}
 .links a{color:var(--accent);text-decoration:none}
 .links a:hover{text-decoration:underline}
-@media (max-width:560px){ h1{font-size:22px} .field.small{max-width:none} }
+@media (max-width:560px){ h1{font-size:22px} .field.small{max-width:none} .scene-grid{grid-template-columns:1fr} }

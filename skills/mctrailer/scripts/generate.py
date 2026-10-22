@@ -75,18 +75,24 @@ def _live_supply(client: McdMcpClient, city: str, keyword: str, be_type: int):
     return meal, True, queried_at
 
 
-def run(repo_url: str, city: str | None, keyword: str, be_type: int, demo: bool) -> dict:
-    # 1) public repo profile (offline-degraded if GitHub unreachable)
-    try:
-        profile = repo_profile.fetch_repo_profile(repo_url)
-    except (ConnectionError, ValueError) as exc:
-        print(f"[warn] live GitHub read failed ({exc}); using degraded profile", file=sys.stderr)
-        profile = repo_profile.degraded_profile(repo_url)
+def run(repo_url=None, text=None, scene=None, city=None, keyword="", be_type=1, demo=False) -> dict:
+    # 1) build the deterministic script from ONE of three entry points
+    if scene:
+        script = script_engine.build_script_from_scenario(scene)
+        source = "scenario"
+    elif text:
+        script = script_engine.build_script_from_text(text)
+        source = "text"
+    else:
+        try:
+            profile = repo_profile.fetch_repo_profile(repo_url)
+        except (ConnectionError, ValueError) as exc:
+            print(f"[warn] live GitHub read failed ({exc}); using degraded profile", file=sys.stderr)
+            profile = repo_profile.degraded_profile(repo_url)
+        script = script_engine.build_script(profile)
+        source = profile.get("source")
 
-    # 2) deterministic movie script
-    script = script_engine.build_script(profile)
-
-    # 3) optional LIVE supply
+    # 2) optional LIVE supply
     meal, live, queried_at = None, False, None
     if not demo:
         client = McdMcpClient()
@@ -100,21 +106,23 @@ def run(repo_url: str, city: str | None, keyword: str, be_type: int, demo: bool)
             except McdMcpError as exc:
                 print(f"[warn] live MCP failed ({exc}); degraded to demo poster", file=sys.stderr)
 
-    # 4) render poster
+    # 3) render poster
     svg = poster_mod.render_poster_svg(script, meal=meal, live=live, queried_at=queried_at)
     repo_root = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
     out_dir = os.path.join(repo_root, "media")
     os.makedirs(out_dir, exist_ok=True)
-    safe = "".join(c if c.isalnum() else "-" for c in script.get("repo", "repo"))[:40]
+    safe = "".join(c if c.isalnum() else "-" for c in (script.get("repo") or script.get("film_title") or "mctrailer"))[:40]
     out_path = os.path.join(out_dir, f"{safe}-poster.svg")
     with open(out_path, "w", encoding="utf-8") as fh:
         fh.write(svg)
 
     return {
-        "profile_source": profile.get("source"),
+        "input_kind": "scene" if scene else "text" if text else "repo",
+        "profile_source": source,
         "genre": script.get("genre_cn"),
         "film_title": script.get("film_title"),
         "opening_line": script.get("opening_line"),
+        "user_quote": script.get("user_quote", ""),
         "protagonist": script.get("protagonist"),
         "meal": meal,
         "live": live,
@@ -123,14 +131,20 @@ def run(repo_url: str, city: str | None, keyword: str, be_type: int, demo: bool)
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="McTrailer: GitHub repo -> McDonald's movie poster")
-    ap.add_argument("--repo", required=True, help="public GitHub repo URL")
+    ap = argparse.ArgumentParser(description="McTrailer: repo URL / one line / scenario -> McDonald's movie poster")
+    ap.add_argument("--repo", default=None, help="public GitHub repo URL")
+    ap.add_argument("--text", default=None, help="one line about your project/today (no GitHub needed)")
+    ap.add_argument("--scene", default=None,
+                    choices=["fixing_a_bug", "release_day", "refactor_marathon", "side_project"],
+                    help="pick a scenario directly (no GitHub needed)")
     ap.add_argument("--city", default=None, help="city for live nearby-store lookup")
     ap.add_argument("--keyword", default="", help="area keyword for nearby lookup")
     ap.add_argument("--be-type", type=int, default=1, choices=[1, 5], help="1=pickup 5=drive-through")
     ap.add_argument("--demo", action="store_true", help="force demo mode (no MCP call)")
     args = ap.parse_args()
-    result = run(args.repo, args.city, args.keyword, args.be_type, args.demo)
+    if not (args.repo or args.text or args.scene):
+        ap.error("provide one of --repo / --text / --scene")
+    result = run(args.repo, args.text, args.scene, args.city, args.keyword, args.be_type, args.demo)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
 

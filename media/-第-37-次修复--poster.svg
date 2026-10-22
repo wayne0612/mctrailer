@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="1080" viewBox="0 0 720 1080" font-family="PingFang SC, Microsoft YaHei, sans-serif">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14141a"/><stop offset="1" stop-color="#05050a"/></linearGradient></defs>
+<rect width="720" height="1080" fill="url(#bg)"/>
+<rect x="28" y="28" width="664" height="1024" fill="none" stroke="#e5c07b" stroke-opacity="0.35" stroke-width="2" rx="10"/>
+<rect x="28" y="28" width="664" height="8" fill="#e5c07b" rx="4"/>
+<rect x="56" y="66" width="240" height="40" rx="20" fill="#2a2a33"/>
+<text x="76" y="92" font-size="22" fill="#e5c07b">悬疑 · Fixing a Bug</text>
+<rect x="514" y="66" width="150" height="40" rx="20" fill="#4a4a52"/>
+<text x="532" y="92" font-size="18" fill="#ffffff">演示样例 · 非实时核价</text>
+<text x="56" y="150" font-size="20" fill="#e5c07b" letter-spacing="4">McTrailer · 麦门导演局</text>
+<text x="56" y="250" font-size="52" font-weight="700" fill="#ffffff">《第 37 次修复</text>
+<text x="56" y="312" font-size="52" font-weight="700" fill="#ffffff">》</text>
+<text x="56" y="378" font-size="26" fill="#e5c07b" font-style="italic">“第 37 次修复，终于通过。”</text>
+<text x="56" y="420" font-size="18" fill="#8a8a9a" font-style="italic">— 凌晨三点还在修一个诡异的 bug —</text>
+<rect x="56" y="442" width="300" height="44" rx="22" fill="#2a2a33" stroke="#e5c07b" stroke-opacity="0.4"/>
+<text x="76" y="472" font-size="22" fill="#ffffff">主角：独立开发者</text>
+<text x="56" y="530" font-size="20" fill="#c9c9d2">深夜的屏幕微光，是悬疑片最好的打光。</text>
+<text x="56" y="580" font-size="18" fill="#6f6f80">— 麦门导演局 · 今日放映 —</text>
+<rect x="48" y="780" width="624" height="200" rx="16" fill="#000000" fill-opacity="0.35" stroke="#e5c07b" stroke-opacity="0.5"/>
+<text x="76" y="824" font-size="22" fill="#e5c07b">今日补给 · 麦门套餐</text>
+<text x="76" y="876" font-size="28" fill="#d8d8e0">补给餐品生成中…</text>
+<text x="76" y="920" font-size="22" fill="#9a9aa6">尚未实时核价 · 配置 MCP Token 后显示真实菜单与价格</text>
+<text x="76" y="960" font-size="16" fill="#8a8a96">来源：麦当劳 MCP（未连接） · 查询时间 2026-10-23 06:28</text>
+<text x="56" y="1028" font-size="16" fill="#7a7a86"></text>
+<text x="664" y="1028" font-size="16" fill="#7a7a86" text-anchor="end">github.com/M-China/mcd-mcp-server</text>
+</svg>
